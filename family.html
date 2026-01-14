@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>👨‍👩‍👧‍👦 가족 형태 퀴즈</title>
+<style>
+body {
+    font-family: 'Segoe UI', sans-serif;
+    background-color: #fffaf0;
+    display: flex;
+    justify-content: center;
+    padding: 30px;
+}
+#quizContainer {
+    background: #fff;
+    padding: 25px;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    width: 500px;
+    text-align: center;
+}
+h2 { color: #333; }
+button {
+    margin: 10px 0;
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+button:hover {
+    opacity: 0.85;
+}
+.answer-button { background-color: #e0ffff; color: #333; }
+.correct { background-color: #90ee90 !important; color: #333; }
+.wrong { background-color: #f08080 !important; color: #fff; }
+#feedback { margin-top: 15px; font-weight: bold; min-height: 24px; font-size:1.1em; }
+#nextButton { background:#4CAF50; color:white; margin-top:10px; display:none; }
+#nextButton:hover { background:#45a049; }
+</style>
+</head>
+<body>
+
+<div id="quizContainer">
+    <h2>🏡 다양한 가족 형태 퀴즈</h2>
+    <div id="question"></div>
+    <div id="answers"></div>
+    <div id="feedback"></div>
+    <button id="nextButton">다음 문제</button>
+</div>
+
+<script>
+const quizzes = [
+    {
+        question: "다문화 가족이란 어떤 가족일까요?",
+        options: [
+            "부모 중 한쪽 또는 양쪽이 다른 나라 출신인 가족",
+            "부모와 아이가 사는 가족",
+            "할머니, 할아버지와 사는 가족",
+            "형제만 있는 가족"
+        ],
+        answer: 0
+    },
+    {
+        question: "한부모 가족이란?",
+        options: [
+            "아빠 또는 엄마 한쪽과 자녀로 이루어진 가족",
+            "아빠와 엄마 모두 있는 가족",
+            "친척과 함께 사는 가족",
+            "친구들과 사는 가족"
+        ],
+        answer: 0
+    },
+    {
+        question: "조부모 가족이란 어떤 경우일까요?",
+        options: [
+            "할머니, 할아버지가 아이와 함께 사는 가족",
+            "아빠, 엄마, 아이가 사는 가족",
+            "친구들과 같이 사는 가족",
+            "형제끼리 사는 가족"
+        ],
+        answer: 0
+    },
+    {
+        question: "다자녀 가족은 무엇을 의미할까요?",
+        options: [
+            "아이들이 2명 이상인 가족",
+            "아이 한 명만 있는 가족",
+            "할머니와 함께 사는 가족",
+            "부모가 없는 가족"
+        ],
+        answer: 0
+    },
+    {
+        question: "한부모 가족과 조부모 가족의 공통점은 무엇일까요?",
+        options: [
+            "부모 모두가 함께 살지 않는 경우가 있다",
+            "항상 부모가 모두 있다",
+            "친구가 가족 구성원이다",
+            "아이 없이 살아간다"
+        ],
+        answer: 0
+    }
+];
+
+let currentQuiz = 0;
+
+function showQuiz() {
+    const quiz = quizzes[currentQuiz];
+    document.getElementById("question").textContent = `문제 ${currentQuiz+1}: ${quiz.question}`;
+    
+    const answersDiv = document.getElementById("answers");
+    answersDiv.innerHTML = "";
+
+    quiz.options.forEach((opt, idx) => {
+        const btn = document.createElement("button");
+        btn.textContent = opt;
+        btn.classList.add("answer-button");
+        btn.onclick = () => checkAnswer(idx);
+        answersDiv.appendChild(btn);
+    });
+
+    document.getElementById("feedback").textContent = "";
+    document.getElementById("nextButton").style.display = "none";
+}
+
+function checkAnswer(selectedIdx) {
+    const quiz = quizzes[currentQuiz];
+    const buttons = document.querySelectorAll(".answer-button");
+
+    buttons.forEach((btn, idx) => {
+        btn.disabled = true;
+        if(idx === quiz.answer){
+            btn.classList.add("correct");
+        } else if(idx === selectedIdx){
+            btn.classList.add("wrong");
+        }
+    });
+
+    if(selectedIdx === quiz.answer){
+        document.getElementById("feedback").textContent = "🎉 정답이에요! 잘 이해했어요.";
+    } else {
+        document.getElementById("feedback").textContent = "❌ 틀렸어요. 다시 생각해보세요!";
+    }
+
+    document.getElementById("nextButton").style.display = "inline-block";
+}
+
+document.getElementById("nextButton").addEventListener("click", ()=>{
+    currentQuiz++;
+    if(currentQuiz >= quizzes.length){
+        document.getElementById("question").textContent = "모든 문제를 완료했어요! 🏆";
+        document.getElementById("answers").innerHTML = "";
+        document.getElementById("nextButton").style.display = "none";
+        document.getElementById("feedback").textContent = "축하합니다! 다양한 가족 형태를 이해했어요!";
+        return;
+    }
+    showQuiz();
+});
+
+// 시작
+showQuiz();
+</script>
+
+</body>
+</html>
