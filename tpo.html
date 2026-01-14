@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>중학생 TPO 옷차림 퀴즈</title>
+<style>
+body {
+    font-family: 'Segoe UI', sans-serif;
+    background-color: #f0f8ff;
+    display: flex;
+    justify-content: center;
+    padding: 30px;
+}
+#quizContainer {
+    background: #fff;
+    padding: 25px;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    width: 500px;
+    text-align: center;
+}
+h2 { color: #333; }
+.select-section { margin: 15px 0; }
+label { display:block; margin:5px 0; font-weight: bold; }
+select { width: 100%; padding: 8px; border-radius:5px; border:1px solid #ccc; }
+button { margin-top: 15px; width: 100%; padding:10px; border:none; border-radius:6px; background:#4CAF50; color:white; font-size:16px; cursor:pointer; }
+button:hover { background:#45a049; }
+#feedback { margin-top: 15px; font-weight:bold; min-height: 24px; }
+#nextButton { background:#008CBA; margin-top:10px; }
+#nextButton:hover { background:#007bb5; }
+</style>
+</head>
+<body>
+
+<div id="quizContainer">
+    <h2>👕 TPO 옷차림 퀴즈</h2>
+    <div id="question"></div>
+
+    <div class="select-section">
+        <label for="topSelect">상의 선택:</label>
+        <select id="topSelect"><option value="">--선택--</option></select>
+    </div>
+
+    <div class="select-section">
+        <label for="bottomSelect">하의 선택:</label>
+        <select id="bottomSelect"><option value="">--선택--</option></select>
+    </div>
+
+    <div class="select-section">
+        <label for="accessorySelect">악세서리 선택:</label>
+        <select id="accessorySelect"><option value="">--선택--</option></select>
+    </div>
+
+    <button id="checkButton">정답 확인</button>
+    <div id="feedback"></div>
+    <button id="nextButton" style="display:none;">다음 문제</button>
+</div>
+
+<script>
+// 퀴즈 데이터
+const quizzes = [
+    {
+        situation: "학교에서 발표를 해야 합니다. 단정하고 깔끔하게 보여야 합니다.",
+        top: ["와이셔츠", "후드티", "민소매"],
+        bottom: ["슬랙스", "청바지", "운동복 반바지"],
+        accessory: ["넥타이", "모자", "목걸이"],
+        answer: {top: "와이셔츠", bottom: "슬랙스", accessory: "넥타이"}
+    },
+    {
+        situation: "학교 운동회 날, 활동하기 편한 옷을 입어야 합니다.",
+        top: ["운동복 티셔츠", "블라우스", "니트"],
+        bottom: ["반바지", "청바지", "치마"],
+        accessory: ["모자", "넥타이", "귀걸이"],
+        answer: {top: "운동복 티셔츠", bottom: "반바지", accessory: "모자"}
+    },
+    {
+        situation: "친구 생일 파티에 초대되었습니다. 캐주얼하고 예쁘게 입어야 합니다.",
+        top: ["캐주얼 셔츠", "운동복 티셔츠", "와이셔츠"],
+        bottom: ["청바지", "슬랙스", "반바지"],
+        accessory: ["목걸이", "넥타이", "모자"],
+        answer: {top: "캐주얼 셔츠", bottom: "청바지", accessory: "목걸이"}
+    }
+];
+
+let currentQuiz = 0;
+
+// 초기 셀렉트 박스 채우기
+function populateSelects(quiz){
+    const topSelect = document.getElementById("topSelect");
+    const bottomSelect = document.getElementById("bottomSelect");
+    const accessorySelect = document.getElementById("accessorySelect");
+
+    topSelect.innerHTML = '<option value="">--선택--</option>';
+    bottomSelect.innerHTML = '<option value="">--선택--</option>';
+    accessorySelect.innerHTML = '<option value="">--선택--</option>';
+
+    quiz.top.forEach(o=>{
+        const option = document.createElement("option");
+        option.value = o;
+        option.textContent = o;
+        topSelect.appendChild(option);
+    });
+    quiz.bottom.forEach(o=>{
+        const option = document.createElement("option");
+        option.value = o;
+        option.textContent = o;
+        bottomSelect.appendChild(option);
+    });
+    quiz.accessory.forEach(o=>{
+        const option = document.createElement("option");
+        option.value = o;
+        option.textContent = o;
+        accessorySelect.appendChild(option);
+    });
+}
+
+// 문제 보여주기
+function showQuiz(){
+    const quiz = quizzes[currentQuiz];
+    document.getElementById("question").textContent = `문제 ${currentQuiz+1}: ${quiz.situation}`;
+    populateSelects(quiz);
+    document.getElementById("feedback").textContent = "";
+    document.getElementById("nextButton").style.display = "none";
+}
+
+// 정답 확인
+document.getElementById("checkButton").addEventListener("click", ()=>{
+    const quiz = quizzes[currentQuiz];
+    const top = document.getElementById("topSelect").value;
+    const bottom = document.getElementById("bottomSelect").value;
+    const accessory = document.getElementById("accessorySelect").value;
+
+    if(!top || !bottom || !accessory){
+        document.getElementById("feedback").textContent = "모든 항목을 선택해야 합니다!";
+        return;
+    }
+
+    if(top===quiz.answer.top && bottom===quiz.answer.bottom && accessory===quiz.answer.accessory){
+        document.getElementById("feedback").textContent = "🎉 정답입니다! 완벽한 옷차림이에요.";
+        document.getElementById("nextButton").style.display = "inline-block";
+    } else {
+        document.getElementById("feedback").textContent = "❌ 틀렸습니다. 다시 생각해 보세요.";
+    }
+});
+
+// 다음 문제
+document.getElementById("nextButton").addEventListener("click", ()=>{
+    currentQuiz++;
+    if(currentQuiz >= quizzes.length){
+        document.getElementById("question").textContent = "모든 퀴즈를 완료했습니다! 🎉";
+        document.getElementById("topSelect").style.display = "none";
+        document.getElementById("bottomSelect").style.display = "none";
+        document.getElementById("accessorySelect").style.display = "none";
+        document.getElementById("checkButton").style.display = "none";
+        document.getElementById("nextButton").style.display = "none";
+        document.getElementById("feedback").textContent = "축하합니다! 모든 상황에 맞는 옷차림을 선택했어요.";
+        return;
+    }
+    showQuiz();
+});
+
+// 초기 시작
+showQuiz();
+</script>
+
+</body>
+</html>
