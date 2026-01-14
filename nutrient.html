@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>🥦 영양소 퀴즈</title>
+<style>
+body {
+    font-family: 'Segoe UI', sans-serif;
+    background-color: #fff0f5;
+    display: flex;
+    justify-content: center;
+    padding: 30px;
+}
+#quizContainer {
+    background: #fff;
+    padding: 25px;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    width: 500px;
+    text-align: center;
+}
+h2 { color: #333; }
+button {
+    margin: 10px 0;
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+button:hover {
+    opacity: 0.85;
+}
+.answer-button { background-color: #ffb6c1; color: #333; }
+.correct { background-color: #90ee90 !important; color: #333; }
+.wrong { background-color: #f08080 !important; color: #fff; }
+#feedback { margin-top: 15px; font-weight: bold; min-height: 24px; font-size:1.1em; }
+#nextButton { background:#4CAF50; color:white; margin-top:10px; display:none; }
+#nextButton:hover { background:#45a049; }
+</style>
+</head>
+<body>
+
+<div id="quizContainer">
+    <h2>🥕 영양소 퀴즈</h2>
+    <div id="question"></div>
+    <div id="answers"></div>
+    <div id="feedback"></div>
+    <button id="nextButton">다음 문제</button>
+</div>
+
+<script>
+const quizzes = [
+    {
+        question: "탄수화물의 주된 역할은 무엇인가요?",
+        options: ["에너지를 공급한다", "근육을 만든다", "면역력을 높인다", "체온을 낮춘다"],
+        answer: 0
+    },
+    {
+        question: "단백질이 가장 많이 필요한 사람은 누구일까요?",
+        options: ["성장기 청소년", "잠만 자는 사람", "피부 관리만 하는 사람", "단순히 산책만 하는 사람"],
+        answer: 0
+    },
+    {
+        question: "비타민 C가 풍부한 음식은?",
+        options: ["귤 🍊", "우유 🥛", "밥 🍚", "참치 🐟"],
+        answer: 0
+    },
+    {
+        question: "칼슘의 역할은 무엇인가요?",
+        options: ["뼈와 치아를 튼튼하게 한다", "피를 맑게 한다", "눈을 밝게 한다", "머리를 좋게 한다"],
+        answer: 0
+    },
+    {
+        question: "지방이 너무 많으면 어떤 문제가 생기나요?",
+        options: ["체중 증가 및 건강 문제", "키가 더 크지 않는다", "손톱이 강해진다", "머리카락이 길어진다"],
+        answer: 0
+    }
+];
+
+let currentQuiz = 0;
+
+function showQuiz() {
+    const quiz = quizzes[currentQuiz];
+    document.getElementById("question").textContent = `문제 ${currentQuiz+1}: ${quiz.question}`;
+    
+    const answersDiv = document.getElementById("answers");
+    answersDiv.innerHTML = "";
+
+    quiz.options.forEach((opt, idx) => {
+        const btn = document.createElement("button");
+        btn.textContent = opt;
+        btn.classList.add("answer-button");
+        btn.onclick = () => checkAnswer(idx);
+        answersDiv.appendChild(btn);
+    });
+
+    document.getElementById("feedback").textContent = "";
+    document.getElementById("nextButton").style.display = "none";
+}
+
+function checkAnswer(selectedIdx) {
+    const quiz = quizzes[currentQuiz];
+    const buttons = document.querySelectorAll(".answer-button");
+
+    buttons.forEach((btn, idx) => {
+        btn.disabled = true;
+        if(idx === quiz.answer){
+            btn.classList.add("correct");
+        } else if(idx === selectedIdx){
+            btn.classList.add("wrong");
+        }
+    });
+
+    if(selectedIdx === quiz.answer){
+        document.getElementById("feedback").textContent = "🎉 정답이에요!";
+    } else {
+        document.getElementById("feedback").textContent = "❌ 틀렸어요. 다시 기억해보세요!";
+    }
+
+    document.getElementById("nextButton").style.display = "inline-block";
+}
+
+document.getElementById("nextButton").addEventListener("click", ()=>{
+    currentQuiz++;
+    if(currentQuiz >= quizzes.length){
+        document.getElementById("question").textContent = "모든 문제를 완료했어요! 🏆";
+        document.getElementById("answers").innerHTML = "";
+        document.getElementById("nextButton").style.display = "none";
+        document.getElementById("feedback").textContent = "축하합니다! 영양소 지식이 쑥쑥 늘었어요!";
+        return;
+    }
+    showQuiz();
+});
+
+// 시작
+showQuiz();
+</script>
+
+</body>
+</html>
